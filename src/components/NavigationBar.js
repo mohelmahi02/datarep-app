@@ -11,6 +11,7 @@ const NavigationBar = () => {
           <Nav.Link href="/">Home</Nav.Link>
           <Nav.Link href="/create">Create Task</Nav.Link>
           <Nav.Link href="/read">View Tasks</Nav.Link>
+          <Nav.Link as={Link} to="/login">Login</Nav.Link>
         </Nav>
       </Container>
     </Navbar>
