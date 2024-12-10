@@ -33,6 +33,7 @@ const Create = () => {
           <select className="form-control" value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
+            <option value="completed">InCompleted</option>
           </select>
         </div>
         <div className="form-group">

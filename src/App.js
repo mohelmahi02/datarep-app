@@ -6,6 +6,7 @@ import Read from './components/Read';
 import Edit from './components/Edit';
 import Login from './components/Login';
 import Footer from './components/Footer';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
