@@ -81,7 +81,7 @@ const authMiddleware = (req, res, next) => {
 // Authentication Routes
 const authRoutes = express.Router();
 
-// Register User (optional, if you need to allow sign-ups)
+// Register User 
 authRoutes.post('/register', async (req, res) => {
   const { username, password } = req.body;
   try {
