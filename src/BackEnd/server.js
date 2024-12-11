@@ -17,12 +17,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/');  // Replace with your MongoDB connection string
-
+mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/'); 
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
-  status: String, // 'pending' or 'completed'
+  status: String, 
   dueDate: Date
 });
 
