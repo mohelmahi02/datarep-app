@@ -21,7 +21,7 @@ const Read = () => {
 
   return (
     <div>
-      <h3>Task List</h3>
+      <h3>Here is a list of all your tasks!</h3>
       {tasks.map((task) => (
         <TaskItem key={task._id} task={task} reloadData={reloadData} />
       ))}
