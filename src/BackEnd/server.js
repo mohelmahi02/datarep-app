@@ -1,102 +1,59 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config(); 
-
-
 const app = express();
 const port = 4000;
 
+const cors = require('cors');
+app.use(cors());
 
-app.use(cors());  
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://<username>:<password>@cluster0.5qfbx.mongodb.net/taskManagerDB', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('MongoDB connected');
-}).catch(err => {
-  console.log('Error connecting to MongoDB:', err);
-});
-
-
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true 
-  },
-  password: {
-    type: String,
-    required: true
-  }
-});
-
-
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10); 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-const User = mongoose.model('User', userSchema);
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/');  // Replace with your MongoDB connection string
 
-
-app.post('/api/auth/register', async (req, res) => {
-  const { username, password } = req.body;
-
-  console.log('Received registration data:', req.body); 
-
-
-  const existingUser = await User.findOne({ username });
-  if (existingUser) {
-    return res.status(400).json({ msg: 'User already exists' });
-  }
-
- 
-  const newUser = new User({ username, password });
-
-  try {
-   
-    newUser.password = await bcrypt.hash(password, 10);
-    await newUser.save();
-    console.log('User registered successfully');
-    res.status(201).json({ msg: 'User registered successfully' });
-  } catch (err) {
-    console.error('Error saving user:', err);  
-    res.status(500).json({ msg: 'Registration failed' });
-  }
+const taskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  status: String, // 'pending' or 'completed'
+  dueDate: Date
 });
 
+const taskModel = new mongoose.model('Task', taskSchema);
 
-app.post('/api/auth/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ msg: 'User not found' });
-
-    
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
-
-    
-    const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
-
-    res.json({ token, user: { id: user._id, username: user.username } });
-  } catch (err) {
-    console.error('Error during login:', err);
-    res.status(500).json({ msg: 'Server error' });
-  }
+app.get('/api/tasks', async (req, res) => {
+  const tasks = await taskModel.find({});
+  res.status(200).json({ tasks });
 });
 
+app.get('/api/task/:id', async (req, res) => {
+  const task = await taskModel.findById(req.params.id);
+  res.json(task);
+});
+
+app.delete('/api/task/:id', async (req, res) => {
+  const task = await taskModel.findByIdAndDelete(req.params.id);
+  res.send(task);
+});
+
+app.put('/api/task/:id', async (req, res) => {
+  const task = await taskModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.send(task);
+});
+
+app.post('/api/tasks', async (req, res) => {
+  const { title, description, status, dueDate } = req.body;
+  const newTask = new taskModel({ title, description, status, dueDate });
+  await newTask.save();
+  res.status(201).json({ message: "Task Added!", task: newTask });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
