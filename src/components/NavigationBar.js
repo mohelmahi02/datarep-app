@@ -11,10 +11,8 @@ const NavigationBar = () => {
       <Container>
         <Navbar.Brand href="/">Task Manager</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link href="/">Home</Nav.Link>
-          <Nav.Link href="/create">Create Task</Nav.Link>
-          <Nav.Link href="/read">View Tasks</Nav.Link>
           <Nav.Link as={Link} to="/login">Login</Nav.Link>
+          <Nav.Link as={Link} to="/register">Register</Nav.Link>
         </Nav>
       </Container>
     </Navbar>

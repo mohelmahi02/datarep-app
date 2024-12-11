@@ -1,51 +1,72 @@
-import axios from "axios";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+ 
 
 const Register = () => {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
 
-    const user = { username, password };
-
-    try {
-      await axios.post('http://localhost:4000/api/auth/register', user);
-      navigate('/login');  // Redirect to login after successful registration
-    } catch (err) {
-      setError('Registration failed. Try again.');
-      console.error(err);
+    if (password !== confirmPassword) {
+      alert("Passwords don't match!");
+      return;
     }
+
+    
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ username, email, password })
+    );
+    alert("Registration successful! You can now log in.");
+    navigate("/login"); 
   };
 
   return (
-    <div>
-      <h3>Register</h3>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit}>
+    <div className="register-container">
+      <h1>Register</h1>
+      <form onSubmit={handleRegister}>
         <div className="form-group">
           <label>Username:</label>
           <input
             type="text"
-            className="form-control"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div className="form-group">
           <label>Password:</label>
           <input
             type="password"
-            className="form-control"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-        <button type="submit" className="btn btn-primary">Register</button>
+        <div className="form-group">
+          <label>Confirm Password:</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Register</button>
       </form>
     </div>
   );

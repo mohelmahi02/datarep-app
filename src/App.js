@@ -1,3 +1,4 @@
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
@@ -7,6 +8,7 @@ import Edit from './components/Edit';
 import Login from './components/Login';
 import Footer from './components/Footer';
 import Dashboard from './components/Dashboard';
+import Register from './components/Register';
 
 function App() {
   return (
@@ -14,13 +16,17 @@ function App() {
       <NavigationBar />
       <div className="container mt-4">
       <Routes>
+      <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+      
        <Route path="/" element={<Dashboard />} /> 
         <Route path="/" element={<Read />} />
         <Route path="/create" element={<Create />} />
         <Route path="/read" element={<Read />} />
         <Route path="/edit/:id" element={<Edit />} />
       
-        <Route path="/login" element={<Login />} />
+        
         </Routes>
         </div>
       <Footer />
