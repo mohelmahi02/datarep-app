@@ -2,56 +2,102 @@ const express = require('express');
 const app = express();
 const port = 4000;
 
+// CORS Middleware
 const cors = require('cors');
-app.use(cors());
+app.use(cors()); // You only need this line, no need to manually set headers
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+// Use Express built-in middleware for JSON and URL encoded data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// MongoDB connection
+const mongoose = require('mongoose');
+mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1); // Exit if the database connection fails
 });
 
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/'); 
+// Task Schema and Model
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
-  status: String, 
+  status: String, // 'pending' or 'completed'
   dueDate: Date
 });
 
-const taskModel = new mongoose.model('Task', taskSchema);
+const taskModel = mongoose.model('Task', taskSchema);
 
+// Routes
+// Get all tasks
 app.get('/api/tasks', async (req, res) => {
-  const tasks = await taskModel.find({});
-  res.status(200).json({ tasks });
+  try {
+    const tasks = await taskModel.find({});
+    res.status(200).json({ tasks });
+  } catch (err) {
+    console.error('Error fetching tasks:', err);
+    res.status(500).json({ message: 'Error fetching tasks' });
+  }
 });
 
+// Get a task by ID
 app.get('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findById(req.params.id);
-  res.json(task);
+  try {
+    const task = await taskModel.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    res.status(200).json(task);
+  } catch (err) {
+    console.error('Error fetching task:', err);
+    res.status(500).json({ message: 'Error fetching task' });
+  }
 });
 
-app.delete('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findByIdAndDelete(req.params.id);
-  res.send(task);
-});
-
-app.put('/api/task/:id', async (req, res) => {
-  const task = await taskModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.send(task);
-});
-
+// Create a new task
 app.post('/api/tasks', async (req, res) => {
   const { title, description, status, dueDate } = req.body;
   const newTask = new taskModel({ title, description, status, dueDate });
-  await newTask.save();
-  res.status(201).json({ message: "Task Added!", task: newTask });
+
+  try {
+    await newTask.save();
+    res.status(201).json({ message: 'Task Added!', task: newTask });
+  } catch (err) {
+    console.error('Error adding task:', err);
+    res.status(500).json({ message: 'Error adding task' });
+  }
+});
+
+
+app.put('/api/task/:id', async (req, res) => {
+  try {
+    const task = await taskModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    res.status(200).json(task);
+  } catch (err) {
+    console.error('Error updating task:', err);
+    res.status(500).json({ message: 'Error updating task' });
+  }
+});
+
+
+app.delete('/api/task/:id', async (req, res) => {
+  try {
+    const task = await taskModel.findByIdAndDelete(req.params.id);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+    res.status(200).json({ message: 'Task deleted', task });
+  } catch (err) {
+    console.error('Error deleting task:', err);
+    res.status(500).json({ message: 'Error deleting task' });
+  }
 });
 
 app.listen(port, () => {

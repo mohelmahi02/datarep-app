@@ -11,7 +11,7 @@ const TaskItem = (props) => {
 
   const handleDelete = (e) => {
     e.preventDefault();
-    axios.delete('http://localhost:4000/api/task/' + props.task._id)
+    axios.delete('http://localhost:4000/api/tasks' + props.task._id)
       .then((res) => {
         props.reloadData();
       })
