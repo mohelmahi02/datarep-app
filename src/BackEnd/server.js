@@ -2,15 +2,15 @@ const express = require('express');
 const app = express();
 const port = 4000;
 
-// CORS Middleware
-const cors = require('cors');
-app.use(cors()); // You only need this line, no need to manually set headers
 
-// Use Express built-in middleware for JSON and URL encoded data
+const cors = require('cors');
+app.use(cors()); 
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// MongoDB connection
+
 const mongoose = require('mongoose');
 mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/', {
   useNewUrlParser: true,
@@ -19,21 +19,20 @@ mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/', {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('MongoDB connection error:', err);
-  process.exit(1); // Exit if the database connection fails
+  process.exit(1); 
 });
 
-// Task Schema and Model
+
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
-  status: String, // 'pending' or 'completed'
+  status: String, 
   dueDate: Date
 });
 
 const taskModel = mongoose.model('Task', taskSchema);
 
-// Routes
-// Get all tasks
+
 app.get('/api/tasks', async (req, res) => {
   try {
     const tasks = await taskModel.find({});
@@ -44,7 +43,7 @@ app.get('/api/tasks', async (req, res) => {
   }
 });
 
-// Get a task by ID
+
 app.get('/api/task/:id', async (req, res) => {
   try {
     const task = await taskModel.findById(req.params.id);
@@ -58,7 +57,7 @@ app.get('/api/task/:id', async (req, res) => {
   }
 });
 
-// Create a new task
+
 app.post('/api/tasks', async (req, res) => {
   const { title, description, status, dueDate } = req.body;
   const newTask = new taskModel({ title, description, status, dueDate });

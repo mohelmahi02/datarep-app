@@ -22,7 +22,17 @@ const Read = () => {
         setIsLoading(false);
       });
   }, []);
-
+  
+  const reloadData = () => {
+    axios.get('http://localhost:4000/api/tasks')
+      .then(response => {
+        setTasks(response.data.tasks);
+        setFilteredTasks(response.data.tasks);
+      })
+      .catch(err => {
+        console.log('Error reloading tasks:', err);
+      });
+  };
   
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -66,7 +76,7 @@ const Read = () => {
       
       {filteredTasks.length > 0 ? (
         filteredTasks.map(task => (
-          <TaskItem key={task._id} task={task} />
+          <TaskItem key={task._id} task={task} reloadData={reloadData} />
         ))
       ) : (
         <p>No tasks found</p>
