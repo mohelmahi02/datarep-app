@@ -61,7 +61,7 @@ const Read = () => {
       sortedTasks = sortedTasks.sort((a, b) => a.status.localeCompare(b.status));
     } else if (option === 'priority') {
       
-      const priorityOrder = ['Low', 'Medium', 'High'];
+      const priorityOrder = ['High', 'Medium', 'Low'];
       sortedTasks = sortedTasks.sort((a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority));
     }
 

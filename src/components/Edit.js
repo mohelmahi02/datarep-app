@@ -30,7 +30,7 @@ const Edit = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedTask = { title, description, status, dueDate };
+    const updatedTask = { title, description, status, dueDate ,priority};
 
     axios.put(`http://localhost:4000/api/task/${id}`, updatedTask)
       .then((res) => {
@@ -76,6 +76,7 @@ const Edit = () => {
           >
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
+            <option value="completed">Incompleted</option>
           </select>
         </div>
         <div className="form-group">
@@ -87,6 +88,17 @@ const Edit = () => {
             onChange={(e) => setDueDate(e.target.value)}
           />
         </div>
+        <div className="form-group">
+                    <label>Priority: </label>
+                    <select className="form-control"
+                        value={priority}
+                        onChange={(e) => { setPriority(e.target.value) }}
+                    >
+                        <option value="Low">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">Low</option>
+                    </select>
+                </div>
         <button type="submit" className="btn btn-primary">Edit Task</button>
       </form>
     </div>

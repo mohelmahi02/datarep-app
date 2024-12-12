@@ -30,7 +30,7 @@ const taskSchema = new mongoose.Schema({
   dueDate: Date,
   priority: { 
     type: String, 
-    enum: ['Low', 'Medium', 'High'], 
+    enum: ['High', 'Medium', 'Low'], 
     default: 'Low' 
   }
 });
@@ -72,7 +72,7 @@ app.post('/api/tasks', async (req, res) => {
 
 app.put('/api/task/:id', async (req, res) => {
   try {
-    const { title, description, status, dueDate,priority } = req.body; 
+    const { title, description, status, dueDate, priority } = req.body; 
     const task = await taskModel.findByIdAndUpdate(
       req.params.id,
       { title, description, status, dueDate }, 
