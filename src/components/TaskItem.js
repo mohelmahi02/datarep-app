@@ -13,10 +13,25 @@ const TaskItem = (props) => {
     e.preventDefault();
     axios.delete(`http://localhost:4000/api/task/${props.task._id}`)
       .then((res) => {
+        console.log('Task deleted:', res.data);
         props.reloadData();
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.value;
+    const updatedTask = { ...props.task, status: newStatus };
+
+    
+    axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
+      .then((res) => {
+        console.log('Task updated:', res.data);
+        props.reloadData();  
+      })
+      .catch((error) => {
+        console.log('Error updating task:', error);
       });
   };
 
@@ -30,6 +45,14 @@ const TaskItem = (props) => {
             <footer>{props.task.status} | Due: {new Date(props.task.dueDate).toLocaleDateString()}</footer>
           </blockquote>
         </Card.Body>
+        <select
+          value={props.task.status}
+          onChange={handleStatusChange}
+          className="form-control mb-2"
+        >
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
+        </select>
         <Link className="btn btn-primary" to={"/edit/" + props.task._id}>Edit</Link>
         <Button className="btn btn-danger" onClick={handleDelete}>Delete</Button>
       </Card>

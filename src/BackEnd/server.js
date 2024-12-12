@@ -74,17 +74,23 @@ app.post('/api/tasks', async (req, res) => {
 
 app.put('/api/task/:id', async (req, res) => {
   try {
-    const task = await taskModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { title, description, status, dueDate } = req.body; 
+    const task = await taskModel.findByIdAndUpdate(
+      req.params.id,
+      { title, description, status, dueDate }, 
+      { new: true } 
+    );
+
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
-    res.status(200).json(task);
+
+    res.status(200).json(task); 
   } catch (err) {
     console.error('Error updating task:', err);
     res.status(500).json({ message: 'Error updating task' });
   }
 });
-
 
 app.delete('/api/task/:id', async (req, res) => {
   try {
