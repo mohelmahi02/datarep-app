@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Create = () => {
   const [title, setTitle] = useState('');
@@ -7,6 +8,7 @@ const Create = () => {
   const [status, setStatus] = useState('pending');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('Low');  
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,6 +16,8 @@ const Create = () => {
 
     axios.post('http://localhost:4000/api/tasks', task)
       .then((res) => { 
+        alert('Task Added Successfully!');
+        navigate('/read');
         console.log(res.data);
       })
       .catch((err) => { 

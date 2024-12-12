@@ -8,7 +8,8 @@ const Edit = () => {
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('pending');
   const [dueDate, setDueDate] = useState('');
-  const [error, setError] = useState(null);  
+  const [error, setError] = useState(null); 
+  const [priority, setPriority] = useState('Low'); 
   const navigate = useNavigate();
 
   
@@ -20,6 +21,7 @@ const Edit = () => {
         setDescription(task.description);
         setStatus(task.status);
         setDueDate(task.dueDate);
+        setPriority(task.priority);
       })
       .catch((err) => {
         console.error("Error fetching task:", err);
