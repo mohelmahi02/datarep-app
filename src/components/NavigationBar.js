@@ -9,6 +9,7 @@ const NavigationBar = () => {
         <Nav className="me-auto">
           <Nav.Link href="/create">Create Task</Nav.Link>
           <Nav.Link href="/read">View Tasks</Nav.Link>
+          <Nav.Link href="/read">About</Nav.Link>
         </Nav>
       </Container>
     </Navbar>
