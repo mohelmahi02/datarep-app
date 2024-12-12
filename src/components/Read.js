@@ -7,7 +7,7 @@ const Read = () => {
   const [filteredTasks, setFilteredTasks] = useState([]);  
   const [searchQuery, setSearchQuery] = useState('');  
   const [isLoading, setIsLoading] = useState(true);  
-
+  const [sortOption, setSortOption] = useState('');
   useEffect(() => {
     
     axios.get('http://localhost:4000/api/tasks')
@@ -52,6 +52,20 @@ const Read = () => {
     setFilteredTasks(tasks);  
   };
 
+  const handleSort = (option) => {
+    setSortOption(option);
+
+    let sortedTasks = [...tasks]; 
+
+    
+    if (option === 'dueDate') {
+      sortedTasks = sortedTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+    } else if (option === 'status') {
+      sortedTasks = sortedTasks.sort((a, b) => a.status.localeCompare(b.status));
+    }
+
+    setFilteredTasks(sortedTasks); 
+  };
   if (isLoading) {
     return <div>Loading...</div>;  
   }
@@ -72,7 +86,11 @@ const Read = () => {
       <button onClick={clearSearch} className="btn btn-secondary mb-3">
         Clear Search
       </button>
-
+     
+     < div className="mb-3">
+        <button className="btn btn-info me-2" onClick={() => handleSort('dueDate')}>Sort by Due Date</button>
+        <button className="btn btn-info me-2" onClick={() => handleSort('status')}>Sort by Status</button>
+      </div>
       
       {filteredTasks.length > 0 ? (
         filteredTasks.map(task => (
