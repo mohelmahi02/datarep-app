@@ -26,8 +26,13 @@ mongoose.connect('mongodb+srv://admin:admin@cluster0.5qfbx.mongodb.net/', {
 const taskSchema = new mongoose.Schema({
   title: String,
   description: String,
-  status: String, 
-  dueDate: Date
+  status: String,
+  dueDate: Date,
+  priority: { 
+    type: String, 
+    enum: ['Low', 'Medium', 'High'], 
+    default: 'Low' 
+  }
 });
 
 const taskModel = mongoose.model('Task', taskSchema);
@@ -67,7 +72,7 @@ app.post('/api/tasks', async (req, res) => {
 
 app.put('/api/task/:id', async (req, res) => {
   try {
-    const { title, description, status, dueDate } = req.body; 
+    const { title, description, status, dueDate,priority } = req.body; 
     const task = await taskModel.findByIdAndUpdate(
       req.params.id,
       { title, description, status, dueDate }, 

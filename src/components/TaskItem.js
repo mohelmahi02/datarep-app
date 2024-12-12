@@ -20,18 +20,32 @@ const TaskItem = (props) => {
         console.log(error);
       });
   };
+
   const handleStatusChange = (e) => {
     const newStatus = e.target.value;
     const updatedTask = { ...props.task, status: newStatus };
 
-    
     axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
       .then((res) => {
         console.log('Task updated:', res.data);
-        props.reloadData();  
+        props.reloadData();
       })
       .catch((error) => {
         console.log('Error updating task:', error);
+      });
+  };
+
+  const handlePriorityChange = (e) => {
+    const newPriority = e.target.value;
+    const updatedTask = { ...props.task, priority: newPriority };
+
+    axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
+      .then((res) => {
+        console.log('Task priority updated:', res.data);
+        props.reloadData();
+      })
+      .catch((error) => {
+        console.log('Error updating task priority:', error);
       });
   };
 
@@ -48,11 +62,38 @@ const TaskItem = (props) => {
             </footer>
           </blockquote>
         </Card.Body>
+
+        <div className="form-group">
+          <label>Status: </label>
+          <select 
+            className="form-control" 
+            value={props.task.status} 
+            onChange={handleStatusChange} 
+          >
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="incompleted">Incompleted</option>
+          </select>
+        </div>
+
+       
+        <div className="form-group">
+          <label>Priority: </label>
+          <select 
+            className="form-control" 
+            value={props.task.priority} 
+            onChange={handlePriorityChange} 
+          >
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
         <Link className="btn btn-primary" to={"/edit/" + props.task._id}>Edit</Link>
         <Button className="btn btn-danger" onClick={handleDelete}>Delete</Button>
       </Card>
     </div>
-    
   );
 };
 
