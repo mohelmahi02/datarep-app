@@ -6,6 +6,7 @@ import Create from './components/Create';
 import Read from './components/Read';
 import Edit from './components/Edit';
 import Footer from './components/Footer';
+import './App.css';
 
 
 
