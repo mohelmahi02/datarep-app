@@ -59,18 +59,11 @@ app.get('/api/task/:id', async (req, res) => {
 
 
 app.post('/api/tasks', async (req, res) => {
-  const { title, description, status, dueDate } = req.body;
-  const newTask = new taskModel({ title, description, status, dueDate });
-
-  try {
-    await newTask.save();
-    res.status(201).json({ message: 'Task Added!', task: newTask });
-  } catch (err) {
-    console.error('Error adding task:', err);
-    res.status(500).json({ message: 'Error adding task' });
-  }
-});
-
+  const { title, description, status, dueDate, priority } = req.body;
+  const newTask = new taskModel({ title, description, status, dueDate, priority });
+  await newTask.save();
+  res.status(201).json({ message: 'Task Added!', task: newTask });
+})
 
 app.put('/api/task/:id', async (req, res) => {
   try {

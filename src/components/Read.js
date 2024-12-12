@@ -8,8 +8,8 @@ const Read = () => {
   const [searchQuery, setSearchQuery] = useState('');  
   const [isLoading, setIsLoading] = useState(true);  
   const [sortOption, setSortOption] = useState('');
+
   useEffect(() => {
-    
     axios.get('http://localhost:4000/api/tasks')
       .then(response => {
         const fetchedTasks = response.data.tasks;
@@ -22,7 +22,7 @@ const Read = () => {
         setIsLoading(false);
       });
   }, []);
-  
+
   const reloadData = () => {
     axios.get('http://localhost:4000/api/tasks')
       .then(response => {
@@ -33,12 +33,11 @@ const Read = () => {
         console.log('Error reloading tasks:', err);
       });
   };
-  
+
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query); 
 
-   
     const filtered = tasks.filter(task =>
       task.title.toLowerCase().includes(query.toLowerCase()) ||
       task.description.toLowerCase().includes(query.toLowerCase())
@@ -46,7 +45,6 @@ const Read = () => {
     setFilteredTasks(filtered);  
   };
 
-  
   const clearSearch = () => {
     setSearchQuery('');  
     setFilteredTasks(tasks);  
@@ -57,15 +55,19 @@ const Read = () => {
 
     let sortedTasks = [...tasks]; 
 
-    
     if (option === 'dueDate') {
       sortedTasks = sortedTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
     } else if (option === 'status') {
       sortedTasks = sortedTasks.sort((a, b) => a.status.localeCompare(b.status));
+    } else if (option === 'priority') {
+      
+      const priorityOrder = ['Low', 'Medium', 'High'];
+      sortedTasks = sortedTasks.sort((a, b) => priorityOrder.indexOf(a.priority) - priorityOrder.indexOf(b.priority));
     }
 
     setFilteredTasks(sortedTasks); 
   };
+
   if (isLoading) {
     return <div>Loading...</div>;  
   }
@@ -74,7 +76,7 @@ const Read = () => {
     <div>
       <h2>All Tasks</h2>
 
-      
+     
       <input
         type="text"
         placeholder="Search tasks..."
@@ -86,11 +88,14 @@ const Read = () => {
       <button onClick={clearSearch} className="btn btn-secondary mb-3">
         Clear Search
       </button>
-     
-     < div className="mb-3">
+
+  
+      <div className="mb-3">
         <button className="btn btn-info me-2" onClick={() => handleSort('dueDate')}>Sort by Due Date</button>
         <button className="btn btn-info me-2" onClick={() => handleSort('status')}>Sort by Status</button>
+        <button className="btn btn-info" onClick={() => handleSort('priority')}>Sort by Priority</button>
       </div>
+
       
       {filteredTasks.length > 0 ? (
         filteredTasks.map(task => (

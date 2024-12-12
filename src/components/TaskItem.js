@@ -42,21 +42,17 @@ const TaskItem = (props) => {
         <Card.Body>
           <blockquote className="blockquote mb-0">
             <p>{props.task.description}</p>
-            <footer>{props.task.status} | Due: {new Date(props.task.dueDate).toLocaleDateString()}</footer>
+            <footer>
+              {props.task.status} | Due: {new Date(props.task.dueDate).toLocaleDateString()} 
+              | Priority: <strong>{props.task.priority}</strong> 
+            </footer>
           </blockquote>
         </Card.Body>
-        <select
-          value={props.task.status}
-          onChange={handleStatusChange}
-          className="form-control mb-2"
-        >
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-        </select>
         <Link className="btn btn-primary" to={"/edit/" + props.task._id}>Edit</Link>
         <Button className="btn btn-danger" onClick={handleDelete}>Delete</Button>
       </Card>
     </div>
+    
   );
 };
 
