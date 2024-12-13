@@ -29,9 +29,10 @@ const Edit = () => {
       });
   }, [id]);
 
-  
+  //Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    //Update task  data
     const updatedTask = { title, description, status, dueDate ,priority};
 
     axios.put(`http://localhost:4000/api/task/${id}`, updatedTask)
@@ -47,9 +48,9 @@ const Edit = () => {
   return (
     <div>
       <h3>Edit Task</h3>
-      
+      {/* Display the error message if there is an error fetching task data */}
       {error && <p style={{ color: 'red' }}>{error}</p>}  
-
+     {/* Task edit form */}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Edit Task Title: </label>
@@ -100,7 +101,7 @@ const Edit = () => {
                         <option value="Medium">Medium</option>
                         <option value="High">Low</option>
                     </select>
-                </div>
+                </div> {/* Submit button to save change */}
         <button type="submit" className="btn btn-primary">Edit Task</button>
       </form>
     </div>

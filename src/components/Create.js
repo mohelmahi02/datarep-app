@@ -9,7 +9,7 @@ const Create = () => {
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('Low');  
   const navigate = useNavigate();
-
+// Handle form submit function
   const handleSubmit = (e) => {
     e.preventDefault();
     const task = { title, description, status, dueDate, priority }; 
@@ -28,6 +28,7 @@ const Create = () => {
   return (
     <div>
       <h3>Create a new Task</h3>
+      {/* The form for adding a new task */}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task Title: </label>
@@ -81,6 +82,9 @@ const Create = () => {
             <option value="High">High</option>
           </select>
         </div>
+
+
+        {/* Submit button to add the new task */}
         <div>
           <input type="submit" value="Add Task" />
         </div>

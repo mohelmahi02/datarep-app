@@ -17,7 +17,7 @@ const TaskItem = (props) => {
     const newStatus = isCompleted ? 'pending' : 'completed'; 
     const updatedTask = { ...props.task, status: newStatus };
 
-    // Send PUT request to update the task status in the backend
+    //  update the task status in the backend
     axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
       .then((res) => {
         console.log('Task updated:', res.data);
