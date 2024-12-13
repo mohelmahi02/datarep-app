@@ -57,6 +57,7 @@ const Read = () => {
 
     if (option === 'dueDate') {
       sortedTasks = sortedTasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
     } else if (option === 'status') {
       sortedTasks = sortedTasks.sort((a, b) => a.status.localeCompare(b.status));
     } else if (option === 'priority') {

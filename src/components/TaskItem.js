@@ -1,52 +1,47 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Card from 'react-bootstrap/Card';
 import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 
 const TaskItem = (props) => {
+  const [isCompleted, setIsCompleted] = useState(props.task.status === 'completed');  // Track task completion status
+  
   useEffect(() => {
     console.log("Task Item:", props.task);
   }, [props.task]);
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-    axios.delete(`http://localhost:4000/api/task/${props.task._id}`)
-      .then((res) => {
-        console.log('Task deleted:', res.data);
-        props.reloadData();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleStatusChange = (e) => {
-    const newStatus = e.target.value;
+  // Task handle task completion toggle
+  const handleCompletionToggle = () => {
+    // Toggle between 'completed' and 'pending'
+    const newStatus = isCompleted ? 'pending' : 'completed'; 
     const updatedTask = { ...props.task, status: newStatus };
 
+    // Send PUT request to update the task status in the backend
     axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
       .then((res) => {
         console.log('Task updated:', res.data);
-        props.reloadData();
+        setIsCompleted(!isCompleted);  // Toggle the isCompleted state
+        props.reloadData();  // Reload task data after update
       })
       .catch((error) => {
-        console.log('Error updating task:', error);
+        console.log('Error updating task:', error);  
       });
   };
-
-  const handlePriorityChange = (e) => {
-    const newPriority = e.target.value;
-    const updatedTask = { ...props.task, priority: newPriority };
-
-    axios.put(`http://localhost:4000/api/task/${props.task._id}`, updatedTask)
-      .then((res) => {
-        console.log('Task priority updated:', res.data);
-        props.reloadData();
-      })
-      .catch((error) => {
-        console.log('Error updating task priority:', error);
-      });
+//Handle Delete function
+  const handleDelete = (e) => {
+    e.preventDefault();
+    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    if (confirmed) {
+      axios.delete(`http://localhost:4000/api/task/${props.task._id}`)
+        .then((res) => {
+          console.log('Task deleted:', res.data);
+          props.reloadData();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -58,39 +53,25 @@ const TaskItem = (props) => {
             <p>{props.task.description}</p>
             <footer>
               {props.task.status} | Due: {new Date(props.task.dueDate).toLocaleDateString()} 
-              | Priority: <strong>{props.task.priority}</strong> 
+              | Priority: <strong>{props.task.priority}</strong>
             </footer>
           </blockquote>
         </Card.Body>
 
+        {/* Checkbox for marking the task as completed */}
         <div className="form-group">
-          <label>Status: </label>
-          <select 
-            className="form-control" 
-            value={props.task.status} 
-            onChange={handleStatusChange} 
-          >
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-            <option value="incompleted">Incompleted</option>
-          </select>
+          <label>Task Completed: </label>
+          <input 
+            type="checkbox" 
+            checked={isCompleted}  // Checked if the task is completed
+            onChange={handleCompletionToggle}  
+          />
         </div>
 
-       
-        <div className="form-group">
-          <label>Priority: </label>
-          <select 
-            className="form-control" 
-            value={props.task.priority} 
-            onChange={handlePriorityChange} 
-          >
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
-
+        {/* Edit button */}
         <Link className="btn btn-primary" to={"/edit/" + props.task._id}>Edit</Link>
+
+        {/* Delete button */}
         <Button className="btn btn-danger" onClick={handleDelete}>Delete</Button>
       </Card>
     </div>
